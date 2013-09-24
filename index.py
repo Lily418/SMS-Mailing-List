@@ -18,6 +18,7 @@ app = Flask("app18297361")
 app.debug = True
 app.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
 mongo = PyMongo(app)
+socketIOServer = SocketIOServer(('0.0.0.0', 8080), app, namespace="socket.io", policy_server=False)
 
 
 @app.route("/broken")
@@ -47,8 +48,5 @@ def index():
     return response
 
 if __name__ == '__main__':
-    app = DebuggedApplication(app, evalex=True)
-    global socketIOServer
-    socketIOServer = SocketIOServer(('0.0.0.0', 8080), app, namespace="socket.io", policy_server=False)
     print('Listening on http://localhost:8080')
     socketIOServer.serve_forever()
