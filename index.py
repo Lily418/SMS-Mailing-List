@@ -31,7 +31,9 @@ def showGraph():
 
 @app.route("/socket.io/<path:path>")
 def run_socketio(path):
-    socketio_manage(request.environ, {'': VoteNamespace}, request)
+    if "socketio" in request.environ:
+        socketio_manage(request.environ, {'': VoteNamespace})
+
 
 def broadcastVote(server, vote):
     pkt = {"type" : "event", "name" : "vote", "args" : {"vote" : vote}, "endpoint": "/Vote"}
