@@ -16,23 +16,20 @@
     <footer></footer>
 
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-	<script src="static/socket.io.js"></script>
-    <script>
-       $(function(){
-    	console.log("Welcome to Chatzilla");
-    	var socket = io.connect('/vote');
-    	socket.on('connect', function () {
-        alert("You are connected to the chat server");
-    	});
-    	
-    	socket.on('vote', voteRecived);
-	});
-	
-	function voteRecived(vote)
-	{
-	alert(JSON.stringify(vote));
-	}
+	<script src="http://js.pusher.com/2.1/pusher.min.js" type="text/javascript"></script>
+  	<script type="text/javascript">
+    // Enable pusher logging - don't include this in production
+    Pusher.log = function(message) {
+      if (window.console && window.console.log) {
+        window.console.log(message);
+      }
+    };
 
-    </script>
+    var pusher = new Pusher('81830a54c2d8b0878390');
+    var channel = pusher.subscribe('vote_channel');
+    channel.bind('vote_event', function(data) {
+      alert(data.message);
+    });
+  	</script>
 </body>
 </html>
