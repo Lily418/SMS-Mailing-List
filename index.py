@@ -6,6 +6,6 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     response = make_response(render_template("Response.xml"))
-    response.headers['content-type'] = "text/xml"
-    return render_template("Response.xml")
+    response.headers['Content-Type'] = "text/xml"
+    return response
 
