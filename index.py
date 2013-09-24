@@ -33,7 +33,8 @@ def showGraph():
 def run_socketio(path):
     if "socketio" in request.environ:
         socketio_manage(request.environ, {'': VoteNamespace})
-
+    else:
+        return ""
 
 def broadcastVote(server, vote):
     pkt = {"type" : "event", "name" : "vote", "args" : {"vote" : vote}, "endpoint": "/Vote"}
