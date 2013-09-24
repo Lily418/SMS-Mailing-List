@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<Message>Hello {{name}} from Games Dev! Join us on the 2nd October, 2pm in the Learning Center. In the meantime join our FB group http://goo.gl/P0igM1 or find our Twitter @UoBGamesDev</Message>
+	<Message>Second Message</Message>
 </Response>
