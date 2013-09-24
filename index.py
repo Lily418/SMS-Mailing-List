@@ -18,7 +18,8 @@ app = Flask("app18297361")
 app.debug = True
 app.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
 mongo = PyMongo(app)
-socketIOServer = SocketIOServer(('0.0.0.0', 8080), app, namespace="socket.io", policy_server=False)
+socketIOServer = SocketIOServer(('', 8080), app ,resource="socket.io")
+
 
 
 @app.route("/broken")
