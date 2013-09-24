@@ -17,12 +17,22 @@ class VoteNamespace(BaseNamespace):
         
     def onVote(self, msg):
         self.emit("vote", msg);
+        
+    def log(self, message):
+        self.logger.info("[{0}] {1}".format(self.socket.sessid, message))
+
+    def recv_connect(self):
+        self.log("New connection")
+
+    def recv_disconnect(self):
+        self.log("Client disconnected")
 
 application= Flask("app18297361")
 application.debug = True
+application.config['PORT'] = 5000
 application.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
 mongo = PyMongo(application)
-socketIOServer = SocketIOServer(('', 8080), application ,resource="socket.io")
+socketIOServer = SocketIOServer(('', application.config['PORT']), application ,resource="socket.io")
 
 
 
@@ -37,7 +47,7 @@ def showGraph():
 @application.route('/socket.io/<path:remaining>')
 def socketio(remaining):
     try:
-        socketio_manage(request.environ, {'': VoteNamespace}, request)
+        socketio_manage(request.environ, {'/vote': VoteNamespace}, request)
     except:
         application.logger.error("Exception while handling socketio connection",
                          exc_info=True)
@@ -58,5 +68,5 @@ def index():
     return response
 
 if __name__ == '__main__':
-    print('Listening on http://localhost:8080')
+    print('Listening on http://localhost:' + str(application.config['PORT']))
     socketIOServer.serve_forever()
