@@ -9,7 +9,7 @@ mongo = PyMongo(app)
 
 @app.route('/', methods=['GET','POST'])
 def index():
-    mongo.db.messages.insert({"from" : request.args['from'], "body" : request.args['body']})
+    mongo.db.messages.insert({"from" : request.args['From'], "body" : request.args['Body']})
     response = make_response(render_template("Response.xml"))
     response.headers['Content-Type'] = "text/xml"
     return response
