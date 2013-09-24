@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, make_response, request
 from flask.ext.pymongo import PyMongo
 
-app = Flask(__name__)
+app = Flask("app18297361")
 app.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
 mongo = PyMongo(app)
 
