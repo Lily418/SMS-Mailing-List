@@ -1,4 +1,4 @@
-from chatzilla import application
+from index import application
 from gevent import monkey
 from socketio.server import SocketIOServer
 

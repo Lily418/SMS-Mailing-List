@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, make_response, request
+from flask import Flask, render_template, make_response, request, Response
 from flask.ext.pymongo import PyMongo
 from socketio import socketio_manage
 from socketio.namespace import BaseNamespace
@@ -11,39 +11,45 @@ from gevent import monkey
 monkey.patch_all()
 
 class VoteNamespace(BaseNamespace):
+    def initialize(self):
+        self.logger = application.logger
+        self.log("Socketio session started")
+        
     def onVote(self, msg):
         self.emit("vote", msg);
 
-app = Flask("app18297361")
-app.debug = True
-app.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
-mongo = PyMongo(app)
-socketIOServer = SocketIOServer(('', 8080), app ,resource="socket.io")
+application= Flask("app18297361")
+application.debug = True
+application.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
+mongo = PyMongo(application)
+socketIOServer = SocketIOServer(('', 8080), application ,resource="socket.io")
 
 
 
-@app.route("/broken")
+@application.route("/broken")
 def beBroken():
     pass
 
-@app.route("/graph")
+@application.route("/graph")
 def showGraph():
-    return render_template("Graph.html")
+    return render_template("landing.html")
 
-@app.route("/socket.io/<path:path>")
-def run_socketio(path):
-    if "socketio" in request.environ:
-        socketio_manage(request.environ, {'': VoteNamespace})
-    else:
-        return ""
+@application.route('/socket.io/<path:remaining>')
+def socketio(remaining):
+    try:
+        socketio_manage(request.environ, {'': VoteNamespace}, request)
+    except:
+        application.logger.error("Exception while handling socketio connection",
+                         exc_info=True)
+    return Response()
 
 def broadcastVote(server, vote):
-    pkt = {"type" : "event", "name" : "vote", "args" : {"vote" : vote}, "endpoint": "/Vote"}
+    pkt = {"type" : "event", "name" : "vote", "args" : {"vote" : vote}, "endpoint": "/vote"}
     for sessid, socket in server.sockets.iteritems():
         socket.send_packet(pkt)
 
 
-@app.route('/', methods=['GET','POST'])
+@application.route('/', methods=['GET','POST'])
 def index():
     mongo.db.messages.insert({"from" : request.form['From'], "body" : request.form['Body']})
     broadcastVote(socketIOServer, request.form['Body'])

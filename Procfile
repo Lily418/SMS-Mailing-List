@@ -1,1 +1,1 @@
-web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker run_server
+web: gunicorn --worker-class socketio.sgunicorn.GeventSocketIOWorker index
