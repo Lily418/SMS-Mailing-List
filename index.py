@@ -4,11 +4,11 @@ from flask.ext.pymongo import PyMongo
 import pusher
 
 
-application= Flask("app18297361")
-application.debug = True
-application.config['PORT'] = 5000
-application.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
-mongo = PyMongo(application)
+app = Flask("app18297361")
+app.debug = True
+app.config['PORT'] = 5000
+app.config['MONGO_URI'] = os.getenv("MONGOHQ_URL", "mongodb://localhost:27017/sms-mailing-list")
+mongo = PyMongo(app)
 
 p = pusher.Pusher(
   app_id='54995',
@@ -17,14 +17,14 @@ p = pusher.Pusher(
 )
 
 
-@application.route("/graph")
+@app.route("/graph")
 def showGraph():
     return render_template("landing.html")
 
 def broadcastVote(vote):
     p['vote_channel'].trigger("vote_event", {"message" : vote})
 
-@application.route('/', methods=['POST'])
+@app.route('/', methods=['POST'])
 def index():
     mongo.db.messages.insert({"from" : request.form['From'], "body" : request.form['Body']})
     broadcastVote(request.form['Body'])
@@ -33,4 +33,4 @@ def index():
     return response
 
 if __name__ == '__main__':
-    application.run()
+    app.run()
