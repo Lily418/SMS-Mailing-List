@@ -20,10 +20,16 @@
     <script>
        $(function(){
     	console.log("Welcome to Chatzilla");
+
+	io.configure(function () { 
+  	  io.set("transports", ["xhr-polling"]); 
+	  io.set("polling duration", 10); 
+	});
+
     	var socket = io.connect('/chat');
     	socket.on('connect', function () {
         alert("You are connected to the chat server");
-    	});
+    	git});
 	});
     </script>
 </body>
