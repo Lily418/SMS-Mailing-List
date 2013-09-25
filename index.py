@@ -24,6 +24,10 @@ def showGraph():
 def broadcastVote(vote):
     p['vote_channel'].trigger("vote_event", {"message" : vote})
 
+@app.route("/raphaelTest")
+def raphaelTest():
+    return render_template("graphTest.html")
+
 @app.route('/', methods=['POST'])
 def index():
     mongo.db.messages.insert({"from" : request.form['From'], "body" : request.form['Body']})
